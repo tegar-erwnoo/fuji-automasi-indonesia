@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>PT FUJI AUTOMASI INDONESIA — Contact</title>
+  <meta name="description" content="Hubungi PT FUJI AUTOMASI INDONESIA."/>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="container">
+    <div class="brand">
+      <div class="logo"></div>
+      <div>
+        <h1>PT FUJI AUTOMASI INDONESIA</h1>
+        <p>Automation • Servo • Motion Control</p>
+      </div>
+    </div>
+    <nav>
+      <a class="navlink" href="index.html">Home</a>
+      <a class="navlink" href="calculator.html">Calculator</a>
+      <a class="navlink" href="services.html">Services</a>
+      <a class="navlink" href="about.html">About</a>
+      <a class="navlink" href="contact.html">Contact</a>
+      <button class="btn secondary" id="btnTheme" type="button">🌓 Tema</button>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="hero">
+    <div class="card"><div class="inner">
+      <div class="kicker"><span class="dot"></span> CONTACT</div>
+      <h2>Request sizing / konsultasi.</h2>
+      <p>
+        Isi form singkat di bawah, lalu klik <b>Kirim via WhatsApp</b>. Pesan akan otomatis terisi.
+      </p>
+
+      <div class="pillrow">
+        <div class="pill">💬 WhatsApp Fast Response</div>
+        <div class="pill">🧮 Sizing Support</div>
+        <div class="pill">🧰 Commissioning</div>
+      </div>
+
+      <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+        <a class="btn" id="waDirect" href="#" target="_blank" rel="noopener">💬 Chat WhatsApp</a>
+        <a class="btn secondary" href="calculator.html">🧮 Hitung dulu</a>
+      </div>
+    </div></div>
+
+    <div class="card"><div class="inner">
+      <h3 style="margin:0 0 8px;font-size:14px">Kontak</h3>
+      <ul class="list small">
+        <li><b>WhatsApp:</b> 0813-8029-7836</li>
+        <li><b>Email:</b> sales@fujiautomasi.co.id</li>
+        <li><b>Jam kerja:</b> Senin–Jumat, 08:00–17:00</li>
+        <li><b>Alamat:</b> Jalan Raya Pondok Rajeng No.29 tanjakan boay, RT.05/RW.05, Tengah, Kec. Cibinong, Kabupaten Bogor, Jawa Barat 16914</li>
+      </ul>
+    </div></div>
+  </section>
+
+  <section class="grid">
+    <div class="card"><div class="inner">
+      <div class="sectionTitle">
+        <div>
+          <h3>Form Request</h3>
+          <p>Data singkat untuk estimasi.</p>
+        </div>
+      </div>
+
+      <div class="field" style="margin-bottom:12px">
+        <label>Nama <span class="hint">wajib</span></label>
+        <input id="c_name" type="text" placeholder="Nama kamu"/>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>Perusahaan <span class="hint">opsional</span></label>
+          <input id="c_company" type="text" placeholder="Nama perusahaan"/>
+        </div>
+        <div class="field">
+          <label>Nomor HP <span class="hint">opsional</span></label>
+          <input id="c_phone" type="text" placeholder="08xxxx"/>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:12px">
+        <div class="field">
+          <label>Jenis aplikasi <span class="hint">rotary/linear</span></label>
+          <select id="c_app">
+            <option value="Rotary">Rotary</option>
+            <option value="Linear">Linear</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Target (singkat) <span class="hint">rpm / mm/s</span></label>
+          <input id="c_target" type="text" placeholder="contoh: 1500 rpm / 400 mm/s"/>
+        </div>
+      </div>
+
+      <div class="field" style="margin-top:12px">
+        <label>Deskripsi kebutuhan <span class="hint">wajib</span></label>
+        <textarea id="c_desc" rows="5" placeholder="Contoh: beban 25kg, belt pulley r=20mm, accel 0.25s, butuh rekomendasi servo & driver."></textarea>
+      </div>
+
+      <div class="actions" style="margin-top:12px">
+        <button class="btn" id="btnSendWA" type="button">💬 Kirim via WhatsApp</button>
+        <button class="btn secondary" id="btnClear" type="button">↺ Clear</button>
+        <span class="badge">WA: 0813-8029-7836</span>
+      </div>
+
+      <p class="note">Catatan: email/alamat bisa kamu ubah sesuai data asli.</p>
+    </div></div>
+
+    <div class="card"><div class="inner">
+      <div class="sectionTitle">
+        <div><h3>Tips kirim data</h3><p>Biar sizing cepat.</p></div>
+      </div>
+      <ul class="list small">
+        <li>Jelaskan transmisi: direct / gearbox, ratio, efisiensi</li>
+        <li>Tulis waktu akselerasi & speed target</li>
+        <li>Sebutkan gaya proses/gesek (jika ada)</li>
+        <li>Jika ada, lampirkan gambar mekanik (sketsa)</li>
+      </ul>
+    </div></div>
+  </section>
+
+  <footer class="footer">
+    <div class="cols">
+      <div>
+        <b>PT FUJI AUTOMASI INDONESIA</b>
+        <div class="small" style="margin-top:8px">© <span id="year"></span></div>
+      </div>
+      <div>
+        <b>Quick Links</b>
+        <ul class="list small">
+          <li><a href="services.html">Services</a></li>
+          <li><a href="calculator.html">Calculator</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+</main>
+
+<script src="assets/app.js"></script>
+<script>
+  // ===========================
+  // WhatsApp Config (single source of truth)
+  // ===========================
+  const WA_NUMBER = "6281380297836"; // format: 62 + nomor tanpa 0 depan
+
+  function buildWaLink(text){
+    return "https://wa.me/" + WA_NUMBER + "?text=" + encodeURIComponent(text);
+  }
+
+  // Button "Chat WhatsApp"
+  function updateDirectLink(){
+    const direct = document.getElementById("waDirect");
+    direct.href = buildWaLink("Halo PT FUJI AUTOMASI INDONESIA, saya ingin konsultasi servo sizing.");
+  }
+  updateDirectLink();
+
+  // Button "Kirim via WhatsApp"
+  document.getElementById("btnSendWA").addEventListener("click", () => {
+    const name = (document.getElementById("c_name").value || "").trim();
+    const company = (document.getElementById("c_company").value || "").trim();
+    const phone = (document.getElementById("c_phone").value || "").trim();
+    const app = document.getElementById("c_app").value;
+    const target = (document.getElementById("c_target").value || "").trim();
+    const desc = (document.getElementById("c_desc").value || "").trim();
+
+    if (!name || !desc){
+      alert("Nama dan Deskripsi kebutuhan wajib diisi.");
+      return;
+    }
+
+    const msg =
+`Halo PT FUJI AUTOMASI INDONESIA,
+Saya ${name}${company ? " dari " + company : ""}${phone ? " (HP: " + phone + ")" : ""}.
+
+Request konsultasi servo sizing:
+- Aplikasi: ${app}
+- Target: ${target || "-"}
+- Detail: ${desc}
+
+Terima kasih.`;
+
+    window.open(buildWaLink(msg), "_blank", "noopener");
+  });
+
+  // Clear form
+  document.getElementById("btnClear").addEventListener("click", () => {
+    ["c_name","c_company","c_phone","c_target","c_desc"].forEach(id => document.getElementById(id).value = "");
+    document.getElementById("c_app").value = "Rotary";
+  });
+</script>
+</body>
+</html>

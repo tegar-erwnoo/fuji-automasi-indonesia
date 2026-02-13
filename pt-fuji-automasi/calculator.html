@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>PT FUJI AUTOMASI INDONESIA — Servo Calculator</title>
+  <meta name="description" content="Kalkulator sizing servo motor (rotary & linear) — torsi, rpm, daya, estimasi inersia."/>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="container">
+    <div class="brand">
+      <div class="logo"></div>
+      <div>
+        <h1>PT FUJI AUTOMASI INDONESIA</h1>
+        <p>Servo Motor Sizing Calculator</p>
+      </div>
+    </div>
+    <nav>
+      <a class="navlink" href="index.html">Home</a>
+      <a class="navlink" href="calculator.html">Calculator</a>
+      <a class="navlink" href="services.html">Services</a>
+      <a class="navlink" href="about.html">About</a>
+      <a class="navlink" href="contact.html">Contact</a>
+      <button class="btn secondary" id="btnTheme" type="button">🌓 Tema</button>
+      <button class="btn" id="btnPrint" type="button">🖨️ Print</button>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="hero">
+    <div class="card"><div class="inner">
+      <div class="kicker"><span class="dot"></span> CALCULATOR</div>
+      <h2>Servo sizing untuk Rotary & Linear.</h2>
+      <p>Isi parameter, klik <b>Hitung</b>, lalu gunakan hasil untuk referensi pemilihan servo (nominal & peak).</p>
+      <div class="pillrow">
+        <div class="pill">🧮 Torque</div>
+        <div class="pill">⚡ Power</div>
+        <div class="pill">🔁 RPM</div>
+        <div class="pill">🧷 Safety Factor</div>
+      </div>
+    </div></div>
+
+    <div class="card"><div class="inner">
+      <h3 style="margin:0 0 8px;font-size:14px">Asumsi Umum</h3>
+      <ul class="list small">
+        <li>Profil akselerasi linear (simple ramp)</li>
+        <li>Untuk final sizing, hitung RMS torque (duty cycle)</li>
+        <li>Gunakan data inersia mekanik yang akurat</li>
+      </ul>
+    </div></div>
+  </section>
+
+  <section class="grid">
+    <div class="card"><div class="inner">
+      <div class="sectionTitle">
+        <div><h3>Input</h3><p>Pilih mode Rotary / Linear.</p></div>
+      </div>
+
+      <div class="tabs" role="tablist">
+        <button class="tab active" id="tabRotary" type="button" aria-selected="true">ROTARY</button>
+        <button class="tab" id="tabLinear" type="button" aria-selected="false">LINEAR</button>
+      </div>
+
+      <!-- ROTARY -->
+      <form id="formRotary" style="margin-top:12px;display:grid;gap:12px">
+        <div class="row">
+          <div class="field">
+            <label>Safety Factor <span class="hint">1.2–2.0</span></label>
+            <input id="rot_sf" type="number" min="1" step="0.05" value="1.5" />
+          </div>
+          <div class="field">
+            <label>Peak factor <span class="hint">2.0–3.0</span></label>
+            <input id="rot_peakFactor" type="number" min="1" step="0.1" value="2.5" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label>Load inertia (J_load) <span class="hint">kg·m²</span></label>
+            <input id="rot_Jload" type="number" min="0" step="0.0001" value="0.002" />
+          </div>
+          <div class="field">
+            <label>Additional inertia (J_add) <span class="hint">kg·m²</span></label>
+            <input id="rot_Jadd" type="number" min="0" step="0.0001" value="0.0003" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label>Target speed <span class="hint">RPM</span></label>
+            <input id="rot_rpm" type="number" min="0" step="1" value="1500" />
+          </div>
+          <div class="field">
+            <label>Accel time <span class="hint">s</span></label>
+            <input id="rot_tacc" type="number" min="0.01" step="0.01" value="0.25" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label>Constant load torque <span class="hint">N·m</span></label>
+            <input id="rot_Tconst" type="number" min="0" step="0.01" value="0.8" />
+          </div>
+          <div class="field">
+            <label>Efficiency <span class="hint">0.6–1.0</span></label>
+            <input id="rot_eff" type="number" min="0.1" max="1" step="0.01" value="0.9" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label>Gear ratio (motor:load) <span class="hint">1=direct</span></label>
+            <input id="rot_ratio" type="number" min="0.1" step="0.1" value="1" />
+          </div>
+          <div class="field">
+            <label>Mode</label>
+            <div class="badge">ROTARY</div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn" type="button" id="btnCalcRotary">🧮 Hitung</button>
+          <button class="btn secondary" type="button" id="btnResetRotary">↺ Reset</button>
+        </div>
+      </form>
+
+      <!-- LINEAR -->
+      <form id="formLinear" class="hide" style="margin-top:12px;display:grid;gap:12px">
+        <div class="row">
+          
+          <div class="field">
+            <label>Massa beban <span class="hint">kg</span></label>
+            <input id="lin_mass" type="number" min="0" step="0.1" value="25" />
+          </div>
+
+          <div class="field">
+            <label>Safety Factor <span class="hint">1.2–2.0</span></label>
+            <input id="lin_sf" type="number" min="1" step="0.05" value="1.5" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label>Kecepatan linear <span class="hint">mm/s</span></label>
+            <input id="lin_v" type="number" min="0" step="1" value="400" />
+          </div>
+          <div class="field">
+            <label>Accel time <span class="hint">s</span></label>
+            <input id="lin_tacc" type="number" min="0.01" step="0.01" value="0.25" />
+          </div>
+        </div>
+
+        
+        <div class="row">
+          <div class="field">
+            <label>Material <span class="hint">auto</span></label>
+            <select id="lin_material">
+              <option value="steel" selected>Steel (ρ=7850 kg/m³)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Koef. gesek (μ) <span class="hint">0–0.3</span></label>
+            <input id="lin_mu" type="number" min="0" max="1" step="0.01" value="0.05" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label>Panjang steel <span class="hint">mm</span></label>
+            <input id="steel_L" type="number" min="0" step="1" value="300" />
+          </div>
+          <div class="field">
+            <label>Lebar steel <span class="hint">mm</span></label>
+            <input id="steel_W" type="number" min="0" step="1" value="200" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label>Tebal steel <span class="hint">mm</span></label>
+            <input id="steel_T" type="number" min="0" step="0.1" value="5" />
+          </div>
+          <div class="field">
+            <label>Gaya proses (otomatis) <span class="hint">N</span></label>
+            <div class="badge" id="lin_Fproc_auto">—</div>
+          </div>
+        </div>
+
+
+        <div class="row">
+          <div class="field">
+            <label>Tipe transmisi</label>
+            <select id="lin_type">
+              <option value="belt">Belt + Pulley</option>
+              <option value="screw">Ball Screw</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Efficiency <span class="hint">0.6–1.0</span></label>
+            <input id="lin_eff" type="number" min="0.1" max="1" step="0.01" value="0.9" />
+          </div>
+        </div>
+
+        <div class="row" id="beltFields">
+          <div class="field">
+            <label>Radius pulley <span class="hint">mm</span></label>
+            <input id="lin_pulleyR" type="number" min="1" step="0.5" value="20" />
+          </div>
+          <div class="field">
+            <label>Gear ratio (motor:axis) <span class="hint">1=direct</span></label>
+            <input id="lin_ratio_belt" type="number" min="0.1" step="0.1" value="1" />
+          </div>
+        </div>
+
+        <div class="row hide" id="screwFields">
+          <div class="field">
+            <label>Lead screw <span class="hint">mm/rev</span></label>
+            <input id="lin_lead" type="number" min="1" step="0.1" value="10" />
+          </div>
+          <div class="field">
+            <label>Gear ratio (motor:screw) <span class="hint">1=direct</span></label>
+            <input id="lin_ratio_screw" type="number" min="0.1" step="0.1" value="1" />
+          </div>
+        </div>
+
+        
+        <div class="row">
+          <div class="field">
+            <label>Peak factor <span class="hint">2.0–3.0</span></label>
+            <input id="lin_peakFactor" type="number" min="1" step="0.1" value="2.5" />
+          </div>
+          <div class="field">
+            <label>Torsi konstan (otomatis) <span class="hint">N·m</span></label>
+            <div class="badge" id="lin_Tconst_auto">—</div>
+          </div>
+        </div>
+
+
+        <div class="actions">
+          <button class="btn" type="button" id="btnCalcLinear">🧮 Hitung</button>
+          <button class="btn secondary" type="button" id="btnResetLinear">↺ Reset</button>
+          <span class="badge">LINEAR</span>
+        </div>
+      </form>
+    </div></div>
+
+    <!-- RESULTS -->
+    <div class="card"><div class="inner">
+      <div class="sectionTitle"><div><h3>Hasil</h3><p>Rekomendasi minimum untuk pemilihan servo.</p></div></div>
+
+      <div class="resultBox">
+        <h4>Output Utama</h4>
+        <div class="kpi">
+          <div class="item"><p class="t">Torsi nominal (recommended)</p><p class="v" id="out_Tnom">—</p></div>
+          <div class="item"><p class="t">Torsi peak (estimated)</p><p class="v" id="out_Tpeak">—</p></div>
+          <div class="item"><p class="t">Kecepatan motor</p><p class="v" id="out_rpm">—</p></div>
+          
+        </div>
+        <div class="note" id="out_note">Isi parameter lalu klik <b>Hitung</b>.</div>
+        <div class="status" id="out_status">
+          <div class="lamp"></div>
+          <div><b id="out_statusTitle">Siap</b><br/><span id="out_statusDesc">Pilih mode Rotary/Linear lalu hitung.</span></div>
+        </div>
+      </div>
+
+      <div class="resultBox" style="margin-top:12px">
+        <h4>Detail Teknis</h4>
+        <div class="kpi">
+          <div class="item"><p class="t">Inersia total di motor (J_total)</p><p class="v" id="out_Jtotal">—</p></div>
+          <div class="item"><p class="t">Akselerasi sudut (α)</p><p class="v" id="out_alpha">—</p></div>
+          <div class="item"><p class="t">Torsi akselerasi (T_acc)</p><p class="v" id="out_Tacc">—</p></div>
+          <div class="item"><p class="t">Torsi beban ekuivalen (T_load)</p><p class="v" id="out_Tload">—</p></div>
+        </div>
+        <p class="note">
+          Untuk final sizing: pertimbangkan duty cycle (RMS torque), profil S-curve, backlash, dan data inersia detail.
+        </p>
+      </div>
+
+      <div class="resultBox" style="margin-top:12px">
+        <h4>Cara Hitung (Singkat)</h4>
+        <ul class="list small">
+          <li>Rotary: ω=2π·RPM/60, α=ω/tacc, Tacc=Jtotal·α, Tnom=(Tacc+Tload)·SF, P=T·ω</li>
+          <li>Linear (Steel): m=ρ·(L·W·T), ρ_steel=7850 kg/m³ (L,W,T dalam meter). Fprocess= m·g (berat material). Ftotal = m·a + μ·m·g + Fprocess.</li>
+          <li>Belt: T_axis = Ftotal·r. Screw: T_axis = Ftotal·lead/(2π). T_motor = (T_axis/eff)/ratio. Torsi konstan (steady) dihitung dari (Ffric+Fprocess) tanpa komponen akselerasi.</li>
+        </ul>
+      </div>
+    </div></div>
+  </section>
+
+  <footer class="footer">
+    <div class="cols">
+      <div><b>PT FUJI AUTOMASI INDONESIA</b><div class="small" style="margin-top:8px">© <span id="year"></span></div></div>
+      <div><b>Need help?</b><ul class="list small"><li><a href="contact.html">Request Sizing via WhatsApp</a></li></ul></div>
+    </div>
+  </footer>
+</main>
+
+<script src="assets/app.js"></script>
+<script>
+  const g = 9.81;
+  const fmt = (n, unit="", digits=3) => {
+    if (!isFinite(n)) return "—";
+    const abs = Math.abs(n);
+    const d = abs >= 1000 ? 1 : abs >= 100 ? 2 : digits;
+    return `${n.toFixed(d)} ${unit}`.trim();
+  };
+  const clamp = (x,a,b)=>Math.max(a,Math.min(b,x));
+
+  const tabRotary = document.getElementById("tabRotary");
+  const tabLinear = document.getElementById("tabLinear");
+  const formRotary = document.getElementById("formRotary");
+  const formLinear = document.getElementById("formLinear");
+
+  const beltFields = document.getElementById("beltFields");
+  const screwFields = document.getElementById("screwFields");
+  const linType = document.getElementById("lin_type");
+
+  const out = {
+    Tnom: document.getElementById("out_Tnom"),
+    Tpeak: document.getElementById("out_Tpeak"),
+    rpm: document.getElementById("out_rpm"),
+
+    Jtotal: document.getElementById("out_Jtotal"),
+    alpha: document.getElementById("out_alpha"),
+    Tacc: document.getElementById("out_Tacc"),
+    Tload: document.getElementById("out_Tload"),
+    note: document.getElementById("out_note"),
+    status: document.getElementById("out_status"),
+    statusTitle: document.getElementById("out_statusTitle"),
+    statusDesc: document.getElementById("out_statusDesc"),
+  };
+
+  function setStatus(type, title, desc){
+    out.status.classList.remove("good","bad");
+    if (type === "good") out.status.classList.add("good");
+    if (type === "bad") out.status.classList.add("bad");
+    out.statusTitle.textContent = title;
+    out.statusDesc.textContent = desc;
+  }
+
+  function setMode(mode){
+    const isRot = mode === "rotary";
+    tabRotary.classList.toggle("active", isRot);
+    tabLinear.classList.toggle("active", !isRot);
+    formRotary.classList.toggle("hide", !isRot);
+    formLinear.classList.toggle("hide", isRot);
+    setStatus("info","Mode dipilih", isRot ? "Isi data Rotary lalu hitung." : "Isi data Linear lalu hitung.");
+  }
+  tabRotary.addEventListener("click", ()=>setMode("rotary"));
+  tabLinear.addEventListener("click", ()=>setMode("linear"));
+
+  linType.addEventListener("change", () => {
+    const v = linType.value;
+    beltFields.classList.toggle("hide", v !== "belt");
+    screwFields.classList.toggle("hide", v !== "screw");
+  });
+
+  function calcRotary(){
+    const Jload = parseFloat(document.getElementById("rot_Jload").value || "0");
+    const Jadd  = parseFloat(document.getElementById("rot_Jadd").value || "0");
+    const rpmTarget = parseFloat(document.getElementById("rot_rpm").value || "0");
+    const tacc = Math.max(0.01, parseFloat(document.getElementById("rot_tacc").value || "0.25"));
+    const Tconst = parseFloat(document.getElementById("rot_Tconst").value || "0");
+    const eff = clamp(parseFloat(document.getElementById("rot_eff").value || "0.9"), 0.1, 1.0);
+    const ratio = Math.max(0.1, parseFloat(document.getElementById("rot_ratio").value || "1"));
+    const sf = Math.max(1.0, parseFloat(document.getElementById("rot_sf").value || "1.5"));
+    const peakFactor = Math.max(1.0, parseFloat(document.getElementById("rot_peakFactor").value || "2.5"));
+
+    const omegaMotor = (2*Math.PI*rpmTarget)/60;
+    const alpha = omegaMotor / tacc;
+
+    const Jtotal = (Jload + Jadd) / (ratio*ratio);
+    const Tacc = Jtotal * alpha;
+    const Tload = (Tconst / eff) / ratio;
+
+    const Tnom = (Tacc + Tload) * sf;
+    const Tpeak = Tnom * peakFactor;
+    
+    out.Tnom.textContent = fmt(Tnom,"N·m");
+    out.Tpeak.textContent = fmt(Tpeak,"N·m");
+    out.rpm.textContent = fmt(rpmTarget,"RPM");
+    
+    out.Jtotal.textContent = fmt(Jtotal,"kg·m²",4);
+    out.alpha.textContent = fmt(alpha,"rad/s²");
+    out.Tacc.textContent = fmt(Tacc,"N·m");
+    out.Tload.textContent = fmt(Tload,"N·m");
+
+    out.note.innerHTML =
+      `Asumsi: RPM target dianggap RPM motor (ratio untuk refleksi beban). Untuk final sizing gunakan RMS torque.`;
+
+    let level="good", msg="Pilih servo dengan torsi nominal ≥ T_nom dan peak ≥ T_peak.";
+    if (eff < 0.75){ level="bad"; msg="Efisiensi rendah → cek mekanik / pertimbangkan gearbox."; }
+    setStatus(level==="bad"?"bad":"good", level==="bad"?"Perlu penyesuaian":"OK untuk estimasi awal", msg);
+  }
+
+  function calcLinear(){
+    const m = Math.max(0, parseFloat(document.getElementById("lin_mass").value || "0"));
+    const v_mm_s = Math.max(0, parseFloat(document.getElementById("lin_v").value || "0"));
+    const v = v_mm_s/1000;
+    const tacc = Math.max(0.01, parseFloat(document.getElementById("lin_tacc").value || "0.25"));
+        const mu = clamp(parseFloat(document.getElementById("lin_mu").value || "0.05"), 0, 2);
+    const eff = clamp(parseFloat(document.getElementById("lin_eff").value || "0.9"), 0.1, 1.0);
+    const sf = Math.max(1.0, parseFloat(document.getElementById("lin_sf").value || "1.5"));
+    const peakFactor = Math.max(1.0, parseFloat(document.getElementById("lin_peakFactor").value || "2.5"));
+    const rhoSteel = 7850; // kg/m^3
+    const L = Math.max(0, parseFloat(document.getElementById("steel_L").value || "0"))/1000;
+    const W = Math.max(0, parseFloat(document.getElementById("steel_W").value || "0"))/1000;
+    const T = Math.max(0, parseFloat(document.getElementById("steel_T").value || "0"))/1000;
+    const vol = L*W*T;
+    const mSteel = vol * rhoSteel;
+
+    // Material force as process force (berat material)
+    const Fproc = mSteel * g;
+
+    // update UI badges
+    const fBadge = document.getElementById("lin_Fproc_auto");
+    if (fBadge) fBadge.textContent = fmt(Fproc, "N");
+    
+
+    
+    const a = v/tacc;
+    const Facc = m*a;
+    const Ffric = mu*m*g;
+    const Ftotal = Facc + Ffric + Fproc;
+
+    const type = document.getElementById("lin_type").value;
+
+    let Taxis=0, rpmMotor=0, ratio=1;
+
+    if (type === "belt"){
+      const r = Math.max(1, parseFloat(document.getElementById("lin_pulleyR").value || "20"))/1000;
+      ratio = Math.max(0.1, parseFloat(document.getElementById("lin_ratio_belt").value || "1"));
+      Taxis = Ftotal*r;
+      const omegaPulley = r>0 ? (v/r) : 0;
+      const rpmPulley = omegaPulley*60/(2*Math.PI);
+      rpmMotor = rpmPulley*ratio;
+    } else {
+      const lead = Math.max(1, parseFloat(document.getElementById("lin_lead").value || "10"))/1000;
+      ratio = Math.max(0.1, parseFloat(document.getElementById("lin_ratio_screw").value || "1"));
+      Taxis = (Ftotal*lead)/(2*Math.PI);
+      const rpmScrew = lead>0 ? (v/lead)*60 : 0;
+      rpmMotor = rpmScrew*ratio;
+    }
+
+    const Tmotor = (Taxis/eff)/ratio;
+
+    // Torsi konstan (steady-state) dihitung tanpa komponen akselerasi (Facc)
+    const Fsteady = Ffric + Fproc;
+    let TaxisSteady = 0;
+    if (type === "belt"){
+      const r = Math.max(1, parseFloat(document.getElementById("lin_pulleyR").value || "20"))/1000;
+      TaxisSteady = Fsteady * r;
+    } else {
+      const lead = Math.max(1, parseFloat(document.getElementById("lin_lead").value || "10"))/1000;
+      TaxisSteady = (Fsteady * lead) / (2*Math.PI);
+    }
+    const Tconst = (TaxisSteady/eff)/ratio;
+    const tBadge = document.getElementById("lin_Tconst_auto");
+    if (tBadge) tBadge.textContent = fmt(Tconst, "N·m");
+
+    const Tnom = (Tmotor)*sf;
+    const Tpeak = Tnom*peakFactor;
+
+    const omegaMotor = (2*Math.PI*rpmMotor)/60;
+    
+    out.Tnom.textContent = fmt(Tnom,"N·m");
+    out.Tpeak.textContent = fmt(Tpeak,"N·m");
+    out.rpm.textContent = fmt(rpmMotor,"RPM");
+    
+    out.Jtotal.textContent = "— (butuh data inersia detail)";
+    out.alpha.textContent = fmt(omegaMotor/tacc,"rad/s²");
+    out.Tacc.textContent = "—";
+    out.Tload.textContent = fmt(Tmotor,"N·m");
+
+    out.note.innerHTML =
+      `Gaya total: <b>${fmt(Ftotal,"N")}</b> (acc=${fmt(Facc,"N")}, friction=${fmt(Ffric,"N")}, steelWeight=${fmt(Fproc,"N")}). Massa steel≈${fmt(m,"kg",3)}.`;
+
+    let level="good", msg="Pilih servo dengan torsi nominal ≥ T_nom dan peak ≥ T_peak serta RPM ≥ kebutuhan.";
+    if (rpmMotor > 3000){ level="bad"; msg="RPM tinggi → pertimbangkan pulley lebih besar / lead lebih besar / gearbox."; }
+    if (eff < 0.75){ level="bad"; msg="Efisiensi rendah → cek mekanik atau ubah transmisi."; }
+    setStatus(level==="bad"?"bad":"good", level==="bad"?"Perlu optimasi":"OK untuk estimasi awal", msg);
+  }
+
+  document.getElementById("btnCalcRotary").addEventListener("click", calcRotary);
+  document.getElementById("btnCalcLinear").addEventListener("click", calcLinear);
+
+  document.getElementById("btnResetRotary").addEventListener("click", () => {
+    rot_sf.value="1.5"; rot_peakFactor.value="2.5"; rot_Jload.value="0.002"; rot_Jadd.value="0.0003";
+    rot_rpm.value="1500"; rot_tacc.value="0.25"; rot_Tconst.value="0.8"; rot_eff.value="0.9"; rot_ratio.value="1";
+    setStatus("info","Di-reset","Silakan hitung kembali.");
+  });
+
+  document.getElementById("btnResetLinear").addEventListener("click", () => {
+    lin_mass.value="25"; lin_sf.value="1.5"; lin_v.value="400"; lin_tacc.value="0.25";
+    lin_mu.value="0.05"; lin_type.value="belt"; lin_eff.value="0.9";
+    steel_L.value="300"; steel_W.value="200"; steel_T.value="5";
+    lin_pulleyR.value="20"; lin_ratio_belt.value="1"; lin_lead.value="10"; lin_ratio_screw.value="1";
+    lin_peakFactor.value="2.5";
+    beltFields.classList.remove("hide"); screwFields.classList.add("hide");
+    setStatus("info","Di-reset","Silakan hitung kembali.");
+  });
+</script>
+</body>
+</html>
